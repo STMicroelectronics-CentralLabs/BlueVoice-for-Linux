@@ -14,13 +14,13 @@ FP-AUD-BVLINK1 			|	SensorTile, BlueCoin or Nucleo+X-Nucleo
 FP-SNS-ALLMEMS1 		|	SensorTile, BlueCoin or Nucleo+X-Nucleo
 STSW-BLUEMIC-1			|	STEVAL-BlueMic-1
 
-SensorTile Development kit --> www.st.com/sensortile
-BlueCoin Starter Kit  --> www.st.com/bluecoin
-STEVAL-BLUEMIC-1    --> www.st.com/en/evaluation-tools/steval-bluemic-1.html
+SensorTile Development kit --> www.st.com/sensortile  
+BlueCoin Starter Kit  --> www.st.com/bluecoin  
+STEVAL-BLUEMIC-1    --> www.st.com/en/evaluation-tools/steval-bluemic-1.html  
 
-FP-AUD-BVLINK1 		-->	www.st.com/en/embedded-software/fp-aud-bvlink1.html
-FP-SNS-ALLMEMS1 	--> www.st.com/en/embedded-software/fp-sns-allmems1.html
-STSW-BLUEMIC-1		--> www.st.com/en/embedded-software/stsw-bluemic-1.html
+FP-AUD-BVLINK1 		-->	www.st.com/en/embedded-software/fp-aud-bvlink1.html  
+FP-SNS-ALLMEMS1 	--> www.st.com/en/embedded-software/fp-sns-allmems1.html  
+STSW-BLUEMIC-1		--> www.st.com/en/embedded-software/stsw-bluemic-1.html  
 
 The chosen firmware must be configured to stream BlueVoice at either 8KHz or 16KHz with a connection interval set to 8.
 __FP-AUD-BVLINK1__ or __FP-SNS-ALLMEMS1__
