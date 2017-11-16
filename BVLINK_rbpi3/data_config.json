@@ -1,0 +1,7 @@
+
+
+{
+	"sync_characteristic": "0x40000000",
+	"audio_characteristic": "0x08000000",
+	"data_service": "0001-11e1-ac36-0002a5d5c51b"
+}
