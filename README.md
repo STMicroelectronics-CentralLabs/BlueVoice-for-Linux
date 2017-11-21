@@ -22,8 +22,8 @@ FP-AUD-BVLINK1 		-->	www.st.com/en/embedded-software/fp-aud-bvlink1.html
 FP-SNS-ALLMEMS1 	--> www.st.com/en/embedded-software/fp-sns-allmems1.html  
 STSW-BLUEMIC-1		--> www.st.com/en/embedded-software/stsw-bluemic-1.html  
 
-The chosen firmware must be configured to stream BlueVoice at either 8KHz or 16KHz with a connection interval set to 8.
-__FP-AUD-BVLINK1__ or __FP-SNS-ALLMEMS1__
+The chosen firmware must be configured to stream BlueVoice at either 8KHz or 16KHz with a connection interval set to 8.  
+__FP-AUD-BVLINK1__ or __FP-SNS-ALLMEMS1__  
 ```
 BV_ADPCM_Config.sampling_frequency = FR_8000; /* FR_16000; */
 ```
@@ -63,7 +63,7 @@ Once the firmware code has been modified according to the above hints it must be
 
 Clone the repository
 ```
-git clone 
+git clone https://github.com/STMicroelectronics-CentralLabs/BlueVoice-for-Linux.git
 ```
 Go to the proper directory
 ```
@@ -117,10 +117,6 @@ Create a 16Khz file audio called "record1.wav" by arecord.
 ```
  arecord -D STL_capture -f S16_LE -r 16000 -c 1 record1.wav
 ```
-
-## Authors
-
-* **Central Lab** - *STMicroelectronics* - 
 
 ## License
 
