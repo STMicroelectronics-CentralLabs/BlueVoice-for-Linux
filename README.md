@@ -90,7 +90,7 @@ Type the following commands to the console
  sudo pip3 install bluepy
  sudo modprobe snd-aloop ; sudo modprobe snd-pcm-oss ; sudo modprobe snd-mixer-oss ; sudo modprobe snd-seq-oss
  sudo bash -c "echo snd-aloop >> /etc/modules"
- sudo bash -c "echo snd-mixer-oss >> /etc/modules"
+ sudo bash -c "echo snd-pcm-oss >> /etc/modules"
  sudo bash -c "echo snd-mixer-oss >> /etc/modules"
  sudo bash -c "echo snd-seq-oss >> /etc/modules"
 ```

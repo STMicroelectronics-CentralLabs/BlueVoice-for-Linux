@@ -13,6 +13,7 @@ import os
 import argparse
 from argparse import ArgumentParser
 from subprocess import call
+import signal
 
 if os.getenv('C', '1') == '0':
     ANSI_RED = ''
@@ -72,7 +73,13 @@ def audio_getter():
 	global brd
 	while True:
 		brd.mAudio.audio_stream(queue_audio)
-	
+
+def signal_handler(signal, frame):
+        print('You pressed Ctrl+C!')
+        call(["cp", "/home/pi/.asoundrc_bkp", "/home/pi/asoundrc"])
+		call(["scp",  "/etc/asound_bkp.conf", "/etc/asound.conf"])
+        sys.exit(0)
+
 def main():
 	global brd
 	global stream
@@ -93,9 +100,15 @@ def main():
 		parser.error("freq_config required, type -h to get more information") 
 	
 	if args.freq_config == 16000:
+		#make a backup of orginal configuration files
+		call(["cp", "/home/pi/.asoundrc", "/home/pi/asoundrc_bkp"])
+		call(["scp",  "/etc/asound.conf", "/etc/asound_bkp.conf"])
 		call(["cp", "./asoundrc_template_16KHz", "/home/pi/.asoundrc"])
 		call(["scp", "./asoundrc_template_16KHz", "/etc/asound.conf"])
 	else:
+		#make a backup of orginal configuration files
+		call(["cp", "/home/pi/.asoundrc", "/home/pi/asoundrc_bkp"])
+		call(["scp",  "/etc/asound.conf", "/etc/asound_bkp.conf"])
 		call(["cp", "./asoundrc_template_8KHz", "/home/pi/.asoundrc"])
 		call(["scp", "./asoundrc_template_8KHz", "/etc/asound.conf"])
 	
@@ -151,6 +164,9 @@ def main():
 	print(	'double tap on SensorTile device (for BVLINK1 FW only) ' )
 	print(	'push SW2 button on BlueCoin device (for BVLINK1 FW only) ' )
 	print(	'Start_stream... ' )
+	signal.signal(signal.SIGINT, signal_handler)
+	print('Press Ctrl+C to exit')
+	signal.pause()
 	stream.start()
 	
 	while True:
