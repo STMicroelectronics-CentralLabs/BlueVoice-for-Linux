@@ -75,10 +75,11 @@ def audio_getter():
 		brd.mAudio.audio_stream(queue_audio)
 
 def signal_handler(signal, frame):
-        print('You pressed Ctrl+C!')
-        call(["cp", "/home/pi/.asoundrc_bkp", "/home/pi/asoundrc"])
-		call(["scp",  "/etc/asound_bkp.conf", "/etc/asound.conf"])
-        sys.exit(0)
+	print('You have pressed Ctrl+C!')
+	call(["mv", "/home/pi/.asoundrc_bkp", "/home/pi/.asoundrc"])
+	call(["scp",  "/etc/asound_bkp.conf", "/etc/asound.conf"])
+	call(["rm",  "/etc/asound_bkp.conf"])
+	sys.exit()
 
 def main():
 	global brd
@@ -99,16 +100,13 @@ def main():
 	if args.freq_config != 16000 and args.freq_config != 8000:
 		parser.error("freq_config required, type -h to get more information") 
 	
+	#make a backup of orginal configuration files
+	call(["cp", "/home/pi/.asoundrc", "/home/pi/.asoundrc_bkp"])
+	call(["scp",  "/etc/asound.conf", "/etc/asound_bkp.conf"])
 	if args.freq_config == 16000:
-		#make a backup of orginal configuration files
-		call(["cp", "/home/pi/.asoundrc", "/home/pi/asoundrc_bkp"])
-		call(["scp",  "/etc/asound.conf", "/etc/asound_bkp.conf"])
 		call(["cp", "./asoundrc_template_16KHz", "/home/pi/.asoundrc"])
 		call(["scp", "./asoundrc_template_16KHz", "/etc/asound.conf"])
 	else:
-		#make a backup of orginal configuration files
-		call(["cp", "/home/pi/.asoundrc", "/home/pi/asoundrc_bkp"])
-		call(["scp",  "/etc/asound.conf", "/etc/asound_bkp.conf"])
 		call(["cp", "./asoundrc_template_8KHz", "/home/pi/.asoundrc"])
 		call(["scp", "./asoundrc_template_8KHz", "/etc/asound.conf"])
 	

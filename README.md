@@ -2,7 +2,7 @@
 
 This repository contains the ST BVLINK_rbpi3 app source code for Linux OS. The application has been tested on Raspberry Pi 3 Model B but could be easily ported to other Linux platform provided that they support [ALSA drivers](https://www.alsa-project.org/main/index.php/Main_Page) and [BlueZ](www.bluez.org/).
 
-The BVLINK_rbpi3 application can receive an audio stream over Bluetooth Low Energy link using the "BlueVoice" vendor-specific profile. The received audio stream is then exported as a it was a standard microphone peripheral taking advantage of the [ALSA aloop device](https://www.alsa-project.org/main/index.php/Matrix:Module-aloop).
+The BVLINK_rbpi3 application can receive an audio stream over Bluetooth Low Energy link using the "BlueVoice" vendor-specific profile. The received audio stream is then exported as a it was a standard microphone peripheral taking advantage of the [ALSA aloop device](https://www.alsa-project.org/main/index.php/Matrix:Module-aloop). The application was developed and tested on Raspbian Jessie.
 
 # BlueVoice transmitting device
 The transmitter (or BLE microphone) can be any ST platform that supports the BlueVoice protocol.
