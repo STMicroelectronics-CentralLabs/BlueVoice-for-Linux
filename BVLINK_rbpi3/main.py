@@ -1,4 +1,3 @@
-import sounddevice as sd
 import Node as stl
 import Scanner as scr
 from bluepy.btle import UUID, Scanner, BTLEException
@@ -34,31 +33,40 @@ else:
 
 queue_audio=deque()
 
-def init_audio(d_out):
+def init_audio(d_out, ff):
 	global stream
+	
+	#make a backup of orginal configuration files
+	call(["cp", "/home/pi/.asoundrc", "/home/pi/.asoundrc_bkp"])
+	call(["scp",  "/etc/asound.conf", "/etc/asound_bkp.conf"])
+	if ff == 16000:
+		call(["cp", "./asoundrc_template_16KHz", "/home/pi/.asoundrc"])
+		call(["scp", "./asoundrc_template_16KHz", "/etc/asound.conf"])
+	else:
+		call(["cp", "./asoundrc_template_8KHz", "/home/pi/.asoundrc"])
+		call(["scp", "./asoundrc_template_8KHz", "/etc/asound.conf"])
+		
+	
+	import sounddevice as sd
 	sd.default.channels=1
-	devIndex =-1
-	devices= sd.query_devices()
-	devF=-1
-	for d in devices:
-		if d_out == "stl_capture":
-			
-			if d["name"] == "STL_playback":
-				devIndex=devices.index(d)
-				devF= int(d["default_samplerate"])
-				print("DEVICE: %s  INDEX:  %s  RATE:  %s " %  (d["name"],devIndex, devF))
-			if d["name"] == "STL_capture":
-				print(ANSI_CYAN + "MIC DEVICE: %s  INDEX:  %s  RATE:  %s CH: %s" %  
-				(d["name"],devices.index(d),  int(d["default_samplerate"]), sd.default.channels[0])+ ANSI_OFF)
-				
-		if d_out == "alsa_playback":
-			if d["name"] == "alsa_playback":
-				devIndex=devices.index(d)
-				devF= int(d["default_samplerate"])
-				print("DEVICE: %s  INDEX:  %s  RATE:  %s " %  (d["name"],devIndex, devF))
-			
-	sd.default.device=devIndex		
 	sd.default.dtype='int16'
+	devIndex =-1
+	devF=-1	
+
+	if d_out == "stl_capture":
+		devIndex= sd.query_devices().index(sd.query_devices(device="STL_playback"))
+		devF= sd.query_devices(device="STL_playback")["default_samplerate"]
+		print("DEVICE: %s  INDEX:  %s  RATE:  %s " %  ("STL_playback",devIndex, devF))
+
+		print(ANSI_CYAN + "MIC DEVICE: %s  INDEX:  %s  RATE:  %s CH: %s" %  
+		("STL_capture",sd.query_devices().index(sd.query_devices(device="STL_capture")), devF, sd.default.channels[0])+ ANSI_OFF)
+			
+	if d_out == "alsa_playback":
+		devIndex= sd.query_devices().index(sd.query_devices(device="default"))
+		devF= sd.query_devices(device="STL_playback")["default_samplerate"]
+		print("DEVICE: %s  INDEX:  %s  RATE:  %s " %  (sd.query_devices(device="default")["name"],devIndex, devF))
+	
+	sd.default.device=devIndex	
 	stream = sd.RawOutputStream(samplerate=devF)
 			
 def audio_player():
@@ -68,22 +76,23 @@ def audio_player():
 			play= b''.join(queue_audio)
 			queue_audio.clear()
 			stream.write(play)
-		
+			
 def audio_getter():
 	global brd
 	while True:
 		brd.mAudio.audio_stream(queue_audio)
-
+		
 def signal_handler(signal, frame):
 	print('You have pressed Ctrl+C!')
 	call(["mv", "/home/pi/.asoundrc_bkp", "/home/pi/.asoundrc"])
 	call(["scp",  "/etc/asound_bkp.conf", "/etc/asound.conf"])
 	call(["rm",  "/etc/asound_bkp.conf"])
-	sys.exit()
+	sys.exit(0)
 
 def main():
 	global brd
 	global stream
+	global ff
 	timeout_sc=2
 	n_dev=-1
 	
@@ -98,17 +107,7 @@ def main():
 		parser.error("output_config required, type -h to get more information") 
 	
 	if args.freq_config != 16000 and args.freq_config != 8000:
-		parser.error("freq_config required, type -h to get more information") 
-	
-	#make a backup of orginal configuration files
-	call(["cp", "/home/pi/.asoundrc", "/home/pi/.asoundrc_bkp"])
-	call(["scp",  "/etc/asound.conf", "/etc/asound_bkp.conf"])
-	if args.freq_config == 16000:
-		call(["cp", "./asoundrc_template_16KHz", "/home/pi/.asoundrc"])
-		call(["scp", "./asoundrc_template_16KHz", "/etc/asound.conf"])
-	else:
-		call(["cp", "./asoundrc_template_8KHz", "/home/pi/.asoundrc"])
-		call(["scp", "./asoundrc_template_8KHz", "/etc/asound.conf"])
+		parser.error("freq_config required, type -h to get more information")  
 	
 	#scanning phase
 	sc=scr.ScanPrint()
@@ -144,8 +143,8 @@ def main():
 		if d.get('index') == n_dev:
 			print(	'Connecting to ' + d.get('name') + "...")
 			brd = stl.Node(d.get('addr'),d.get('type_addr'))
-	
 	print("Connected")
+	
 	brd.syncAudio.enable()
 	brd.syncAudio.enableNotification()
 
@@ -153,7 +152,7 @@ def main():
 	brd.mAudio.setSyncManager(brd.syncAudio)	
 	brd.mAudio.enableNotification()
 	 
-	init_audio(args.output_config)
+	init_audio(args.output_config, args.freq_config)
 	
 	getter = Thread(target=audio_getter)
 	getter.start()
@@ -162,11 +161,10 @@ def main():
 	print(	'double tap on SensorTile device (for BVLINK1 FW only) ' )
 	print(	'push SW2 button on BlueCoin device (for BVLINK1 FW only) ' )
 	print(	'Start_stream... ' )
-	signal.signal(signal.SIGINT, signal_handler)
 	print('Press Ctrl+C to exit')
-	signal.pause()
-	stream.start()
 	
+	stream.start()
+	signal.signal(signal.SIGINT, signal_handler)
 	while True:
 		brd.waitForNotifications(1.0)
 				

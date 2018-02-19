@@ -2,7 +2,7 @@ pcm.!default {
   type asym
    playback.pcm {
      type plug
-     slave.pcm "hw:0,0"
+     slave.pcm "hw:1,0"
    }
    capture.pcm {
      type plug
@@ -39,15 +39,11 @@ pcm.STL_capture {
  type plug
  slave.pcm "ploop"
  }
+ 
 
-pcm_slave.sl3 {
-	pcm "hw:1,0"
-	format S16_LE
-	channels 1
-	rate 16000
-}
 
 pcm.alsa_playback {
 	type plug
-	slave sl3
+	slave default
+
 }
