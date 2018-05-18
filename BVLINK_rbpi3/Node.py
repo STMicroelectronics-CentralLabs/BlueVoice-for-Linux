@@ -47,6 +47,7 @@ class STLDelegate(DefaultDelegate):
 		print("initDelegate ")
 		
 	def handleNotification(self, hnd, data):
-		self.stl.extracData(hnd,data)
+            self.stl.extracData(hnd,data)
+		
 
  

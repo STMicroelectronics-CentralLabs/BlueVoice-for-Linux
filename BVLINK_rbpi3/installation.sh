@@ -8,11 +8,15 @@ sudo pip3 install sounddevice;
 sudo pip3 install bluepy;
 
 #load kernel module and let them permanent
-sudo modprobe snd-aloop ; sudo modprobe snd-pcm-oss ; sudo modprobe snd-mixer-oss ; sudo modprobe snd-seq-oss;
+sudo modprobe snd-aloop ; 
 sudo bash -c "echo snd-aloop >> /etc/modules"
-sudo bash -c "echo snd-mixer-oss >> /etc/modules"
-sudo bash -c "echo snd-mixer-oss >> /etc/modules"
-sudo bash -c "echo snd-seq-oss >> /etc/modules"
+
+
+
+
+#prevent audio out garbling because of audio out peripheral of raspberry
+sudo bash -c "echo disable_audio_dither=1 >> /boot/config.txt"
+sudo bash -c "echo audio_pwm_mode=2 >> /boot/config.txt"
 
 
 echo BVLINK_rbpi3 installation complete;
