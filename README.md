@@ -2,33 +2,33 @@
 
 This repository contains the ST BVLINK_rbpi3 app source code for Linux OS. The application has been tested on Raspberry Pi 3 Model B but could be easily ported to other Linux platform provided that they support [ALSA drivers](https://www.alsa-project.org/main/index.php/Main_Page) and [BlueZ](www.bluez.org/).
 
-The BVLINK_rbpi3 application can receive an audio stream over Bluetooth Low Energy link using the "BlueVoice" vendor-specific profile. The received audio stream is then exported as a it was a standard microphone peripheral taking advantage of the [ALSA aloop device](https://www.alsa-project.org/main/index.php/Matrix:Module-aloop). The application was developed and tested on Raspbian Jessie.
+The BVLINK_rbpi3 application can receive an audio stream over Bluetooth Low Energy link using the "BlueVoice" vendor-specific profile. The received audio stream is then exported as a it was a standard microphone peripheral taking advantage of the [ALSA aloop device](https://www.alsa-project.org/main/index.php/Matrix:Module-aloop).
 
 # BlueVoice transmitting device
 The transmitter (or BLE microphone) can be any ST platform that supports the BlueVoice protocol.
 The following table states the list of compatible firmware and the supported hardware platform that can be programmed as "BlueVoice" transmitting device.
 
-Firmware Name			|	Supported hardware platforms
+Firmware Name     | Supported hardware platforms
 ----------------------- | -------------------------------------------------
-FP-AUD-BVLINK1 			|	SensorTile, BlueCoin or Nucleo+X-Nucleo
-FP-SNS-ALLMEMS1 		|	SensorTile, BlueCoin or Nucleo+X-Nucleo
-STSW-BLUEMIC-1			|	STEVAL-BlueMic-1
+FP-AUD-BVLINK1      | SensorTile, BlueCoin or Nucleo+X-Nucleo
+FP-SNS-ALLMEMS1     | SensorTile, BlueCoin or Nucleo+X-Nucleo
+STSW-BLUEMIC-1      | STEVAL-BlueMic-1
 
-SensorTile Development kit --> www.st.com/sensortile  
-BlueCoin Starter Kit  --> www.st.com/bluecoin  
-STEVAL-BLUEMIC-1    --> www.st.com/en/evaluation-tools/steval-bluemic-1.html  
+SensorTile Development kit --> www.st.com/sensortile
+BlueCoin Starter Kit  --> www.st.com/bluecoin
+STEVAL-BLUEMIC-1    --> www.st.com/en/evaluation-tools/steval-bluemic-1.html
 
-FP-AUD-BVLINK1 		-->	www.st.com/en/embedded-software/fp-aud-bvlink1.html  
-FP-SNS-ALLMEMS1 	--> www.st.com/en/embedded-software/fp-sns-allmems1.html  
-STSW-BLUEMIC-1		--> www.st.com/en/embedded-software/stsw-bluemic-1.html  
+FP-AUD-BVLINK1    --> www.st.com/en/embedded-software/fp-aud-bvlink1.html
+FP-SNS-ALLMEMS1   --> www.st.com/en/embedded-software/fp-sns-allmems1.html
+STSW-BLUEMIC-1    --> www.st.com/en/embedded-software/stsw-bluemic-1.html
 
-The chosen firmware must be configured to stream BlueVoice at either 8KHz or 16KHz with a connection interval set to 8.  
-__FP-AUD-BVLINK1__ or __FP-SNS-ALLMEMS1__  
+The chosen firmware must be configured to stream BlueVoice at either 8KHz or 16KHz with a connection interval set to 8.
+__FP-AUD-BVLINK1__ or __FP-SNS-ALLMEMS1__
 ```
 BV_ADPCM_Config.sampling_frequency = FR_8000; /* FR_16000; */
 ```
 ```
-#define AUDIO_IN_SAMPLING_FREQUENCY   FR_8000 /* FR_16000 */
+#define AUDIO_IN_SAMPLING_FREQUENCY   SAMPLING_FREQ_8000 /* SAMPLING_FREQ_16000 */
 ```
 ```
 aci_l2cap_connection_parameter_update_request(handle,
@@ -61,39 +61,29 @@ Once the firmware code has been modified according to the above hints it must be
 
 ## Installing procedure
 
+Type the following commands to the console to install required packages
+```
+ sudo apt-get update
+ sudo apt-get install build-essential libssl-dev libffi-dev python-dev python-cffi libglib2.0-dev
+ sudo pip3 install sounddevice
+ sudo pip3 install bluepy
+```
+Type the following commands to the console to load required module
+
+```
+ sudo modprobe snd-aloop 
+ sudo bash -c "echo snd-aloop >> /etc/modules"
+```
 Clone the repository
 ```
 git clone https://github.com/STMicroelectronics-CentralLabs/BlueVoice-for-Linux.git
 ```
 Go to the proper directory
 ```
-cd BVLINK_rbpi3/projects/BVLINK_rbpi3
+cd BlueVoice-for-Linux/BVLINK_rbpi3
 ```
-If you want to use the step by step installation procedure jump to the Manual section, otherwise follow the Automatic one.
 
-#### Automatic
-Give the executable permissions to the installation script
-```
-chmod +x ./installation.sh 
-```
-Run the installation.sh script to install BVLINK_rbpi3:
-```
-sudo ./installation.sh 
-```
- Now BVLINK_rbpi3 is installed. 
-#### Manual 
-Type the following commands to the console
-```
- sudo apt-get update
- sudo apt-get install build-essential libssl-dev libffi-dev python-dev python-cffi libglib2.0-dev
- sudo pip3 install sounddevice
- sudo pip3 install bluepy
- sudo modprobe snd-aloop ; sudo modprobe snd-pcm-oss ; sudo modprobe snd-mixer-oss ; sudo modprobe snd-seq-oss
- sudo bash -c "echo snd-aloop >> /etc/modules"
- sudo bash -c "echo snd-pcm-oss >> /etc/modules"
- sudo bash -c "echo snd-mixer-oss >> /etc/modules"
- sudo bash -c "echo snd-seq-oss >> /etc/modules"
-```
+
 
 ## Running the application
 ```
@@ -117,6 +107,15 @@ Create a 16Khz file audio called "record1.wav" by arecord.
 ```
  arecord -D STL_capture -f S16_LE -r 16000 -c 1 record1.wav
 ```
+## Troubleshooting 
+Prevent audio out garbling because of audio out peripheral of raspberry
+```
+sudo bash -c "echo disable_audio_dither=1 >> /boot/config.txt"
+sudo bash -c "echo audio_pwm_mode=2 >> /boot/config.txt"
+```
+## Authors
+
+* **Central Lab** - *STMicroelectronics* - 
 
 ## License
 
