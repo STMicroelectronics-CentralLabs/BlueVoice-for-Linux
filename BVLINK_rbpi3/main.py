@@ -171,9 +171,9 @@ def main():
     getter.start()
     player = Thread(target=audio_player)
     player.start()
-    print(    'double tap on SensorTile device (for BVLINK1 FW only) ' )
-    print(    'push SW2 button on BlueCoin device (for BVLINK1 FW only) ' )
-    print(    'Start_stream... ' )
+    print(    'Double tap on SensorTile device (for BVLINK1 FW only) to start audio streaming' )
+    print(    'Push SW2 button on BlueCoin device (for BVLINK1 FW only) to start audio streaming' )
+    print(    'Device starts fast blinking when it streams. ' )
     print('Press Ctrl+C to exit')
     
     stream.start()
@@ -193,5 +193,6 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as e:
+      # do nothing here
         print("{}: {}".format(type(e).__name__, e))
 

@@ -39,7 +39,7 @@ aci_l2cap_connection_parameter_update_request(handle,
 ```
 __STSW-BLUEMIC-1__
 ```
-#define AUDIO_SAMPLING_FREQUENCY     (uint16_t)(SAMPLING_FREQ_8000) /* SAMPLING_FREQ_16000 */ 
+#define AUDIO_SAMPLING_FREQUENCY     (uint16_t)(SAMPLING_FREQ_8000) /* SAMPLING_FREQ_16000 */ 
 ```
 ```
 aci_l2cap_connection_parameter_update_request(handle,
@@ -73,6 +73,8 @@ Type the following commands to the console to load required module
 ```
  sudo modprobe snd-aloop 
  sudo bash -c "echo snd-aloop >> /etc/modules"
+ sudo bash -c "echo options snd_bcm2835 index=0 >> /etc/modprobe.d/alsa-base.conf"
+ sudo bash -c "echo options snd_aloop index=-2 >> /etc/modprobe.d/alsa-base.conf"
 ```
 Clone the repository
 ```
@@ -119,7 +121,7 @@ sudo bash -c "echo audio_pwm_mode=2 >> /boot/config.txt"
 
 ## License
 
-COPYRIGHT(c) 2017 STMicroelectronics
+COPYRIGHT(c) 2018 STMicroelectronics
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
